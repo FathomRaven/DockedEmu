@@ -9,6 +9,18 @@ PRODUCT_ID="2001"
 
 DOCKED=false
 
+# Combine all parameters except for the first
+if [ $# -ge 2 ]; then
+    combined_params=""
+    shift   # Move to the next parameter after $1
+
+    for param in "$@"; do
+        combined_params="$combined_params $param"
+    done    
+else
+    combined_params=$1
+fi
+
 # Check if docked
 if lsusb | grep -q "$VENDOR_ID:$PRODUCT_ID"; then
     DOCKED=true
@@ -16,8 +28,8 @@ fi
 
 if [ "$1" == "dolphin" ]; then
     if [ "$DOCKED" = true ]; then
-		$DOLPHIN_EXEC $2 --config Graphics.Settings.InternalResolution=3
+		$DOLPHIN_EXEC $combined_params --config Graphics.Settings.InternalResolution=3
 	else
-		$DOLPHIN_EXEC $2 --config Graphics.Settings.InternalResolution=2
+		$DOLPHIN_EXEC $combined_params --config Graphics.Settings.InternalResolution=2
 	fi
 fi
